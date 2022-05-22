@@ -130,10 +130,6 @@ def itemsInsertDb(items: dict, link, conn) -> bool:
 	save = True
 	itemNo = 0
 	for item, data in items.items():
-		query_start = f"id='{data['id']}', category='{data['category']}', icon='{data['icon'].replace('.', '/')}', name='{data['name']}', "
-		query_mid1 = f"grade='{data['grade']}', level='{data['level']}', classes='{data['classes']}', races='{data['races']}', "
-		query_mid2 = f"gender='{data['gender']}', obtainable='{data['obtainable']}', tradable='{data['tradable']}', dyeable='{data['dyeable']}', "
-		query_end = f"period='0', periodByWebAdmin='0', name_de='{data['name_de']}', name_en='{data['name_en']}'"
 
 		id = data['id']
 		category = data['category']
