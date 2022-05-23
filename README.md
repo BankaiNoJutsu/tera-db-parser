@@ -1,4 +1,4 @@
-# Tera Europe DB Parser | ..a project by VALKYTEQ
+# Tera Data Parser | ..a project by VALKYTEQ
 
 
 Tera Datacenter Parser to create Database Tables  
@@ -11,4 +11,4 @@ You can reach out to us over...
 <br><br>
 
 Find the full docs here:  
-https://valky.dev/docs/tera-db-parser/
+https://valky.dev/docs/tera-data-parser/
