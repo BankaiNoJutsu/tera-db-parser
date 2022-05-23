@@ -36,7 +36,7 @@ Put all ```StrSheet_Item``` client xml files into ```/data/StrSheet```
 
 
 ### Parser Setup
-Open ```config_wa_gw.ini``` and adjust:  
+Open ```config.ini``` and adjust:  
 ```
 [Parser]
 debug = False           // Verbose output
