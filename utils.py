@@ -1,4 +1,5 @@
 import configparser
+import datetime
 import urllib.error
 import xml.etree.ElementTree as xml
 from os.path import exists, isdir
@@ -93,14 +94,16 @@ def itemsRead(items: dict, debug=False):
 			items[itemId]['category'] = item.get('category') if item.get('category') else ''
 			items[itemId]['icon'] = item.get('icon') if item.get('icon') else ''
 			items[itemId]['name'] = item.get('name') if item.get('name') else ''
-			items[itemId]['grade'] = item.get('rareGrade') if item.get('rareGrade') else ''
-			items[itemId]['level'] = item.get('level') if item.get('level') else ''
+			items[itemId]['grade'] = item.get('rareGrade') if item.get('rareGrade') else '0'
+			items[itemId]['level'] = item.get('level') if item.get('level') else '1'
 			items[itemId]['classes'] = item.get('requiredClass') if item.get('requiredClass') else ''
 			items[itemId]['races'] = item.get('requiredRace') if item.get('requiredRace') else ''
 			items[itemId]['gender'] = item.get('requiredGender') if item.get('requiredGender') else ''
-			items[itemId]['tradable'] = item.get('tradable') if item.get('tradable') else ''
-			items[itemId]['obtainable'] = item.get('obtainable') if item.get('obtainable') else ''
-			items[itemId]['dyeable'] = item.get('changeColorEnable') if item.get('changeColorEnable') else ''
+			items[itemId]['tradable'] = item.get('tradable') if item.get('tradable') else '0'
+			items[itemId]['obtainable'] = item.get('obtainable') if item.get('obtainable') else '0'
+			items[itemId]['dyeable'] = item.get('changeColorEnable') if item.get('changeColorEnable') else '0'
+			items[itemId]['period'] = item.get('periodInMinute') if item.get('periodInMinute') else '0'
+			items[itemId]['periodAdmin'] = '1' if item.get('periodByWebAdmin') == "True" else '0'
 
 	print(f"Reading Items complete: {itemNo}")
 	return items
@@ -137,19 +140,34 @@ def itemsInsertDb(items: dict, link, conn) -> bool:
 		name = data['name']
 		grade = data['grade']
 		level = data['level']
-		classes = data['classes']
-		races = data['races']
-		gender = data['gender']
 		obtainable = data['obtainable']
 		tradable = data['tradable']
 		dyeable = data['dyeable']
+		period = data['period']
+		periodAdmin = data['periodAdmin']
 		name_de = data['name_de'].replace('"', "'")
 		name_en = data['name_en'].replace('"', "'")
 
-		query = "INSERT INTO items (id, category, icon, name, grade, level, classes, races, gender, obtainable, tradable, dyeable, period, periodByWebAdmin, name_de, name_en) "
-		input = f'VALUES ("{id}", "{category}", "{icon}", "{name}", "{grade}", "{level}", "{classes}", "{races}", "{gender}", "{obtainable}", "{tradable}", "{dyeable}", "0", "0", "{name_de}", "{name_en}")'
+		classes = ""
+		if data['classes']:
+			for typ in data['classes'].split(';'):
+				classes = classes + str(getClassId(typ)) + ";"
+			classes = classes[:-1]
+
+		races = ""
+		if data['races']:
+			for typ in data['races'].split(';'):
+				races = races + str(getRaceId(typ)) + ";"
+			races = races[:-1]
+
+		gender = ""
+		if data['gender']:
+			gender = str(getGenderId(data['gender']))
+
+		query = f'INSERT INTO items (id, category, icon, name, grade, level, classes, races, gender, obtainable, tradable, dyeable, period, periodByWebAdmin, name_de, name_en) ' \
+				f'VALUES ("{id}", "{category}", "{icon}", "{name}", "{grade}", "{level}", "{classes}", "{races}", "{gender}", "{obtainable}", "{tradable}", "{dyeable}", "{period}", "{periodAdmin}", "{name_de}", "{name_en}")'
 		try:
-			link.execute(query + input)
+			link.execute(query)
 			conn.commit()
 			itemNo = itemNo + 1
 		except:
@@ -160,6 +178,67 @@ def itemsInsertDb(items: dict, link, conn) -> bool:
 	if save: print(f"Inserting Items complete: {itemNo}")
 	return save
 
+
+def performance(stage: str, time=False):
+	match stage:
+		case "start":
+			return datetime.datetime.now()
+		case "end":
+			return (datetime.datetime.now() - time).total_seconds()
+
+
+def getGenderId(name: str) -> int:
+	match name.lower():
+		case "male":
+			return 0
+		case "female":
+			return 1
+
+
+def getRaceId(name: str) -> int:
+	match name.lower():
+		case "human":
+			return 0
+		case "highelf":
+			return 1
+		case "aman":
+			return 2
+		case "castanic":
+			return 3
+		case "popori":
+			return 4
+		case "baraka":
+			return 5
+
+
+def getClassId(name: str) -> int:
+	match name.lower():
+		case "warrior":
+			return 0
+		case "lancer":
+			return 1
+		case "slayer":
+			return 2
+		case "berserker":
+			return 3
+		case "sorcerer":
+			return 4
+		case "archer":
+			return 5
+		case "priest":
+			return 6
+		case "elementalist":  # mystic
+			return 7
+		case "soulless":  # reaper
+			return 8
+		case "engineer":  # gunner
+			return 9
+		case "fighter":  # brawler
+			return 10
+		case "assassin":  # ninja
+			return 11
+		case "glaiver":  # valkyrie
+			return 12
 
 # itemSearch = item.get('searchable')
 # itemCombatType = item.get('combatItemType')
