@@ -2,7 +2,7 @@
 
 
 Tera Datacenter Parser to create Database Tables  
-Project: **_tera-db-parser_**
+Project: **_tera-data-parser_**
 
 ### Contact:
 You can reach out to us over...  
