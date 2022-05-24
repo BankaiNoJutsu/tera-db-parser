@@ -99,9 +99,9 @@ def itemsRead(items: dict, debug=False):
 			items[itemId]['classes'] = item.get('requiredClass') if item.get('requiredClass') else ''
 			items[itemId]['races'] = item.get('requiredRace') if item.get('requiredRace') else ''
 			items[itemId]['gender'] = item.get('requiredGender') if item.get('requiredGender') else ''
-			items[itemId]['tradable'] = item.get('tradable') if item.get('tradable') else '0'
-			items[itemId]['obtainable'] = item.get('obtainable') if item.get('obtainable') else '0'
-			items[itemId]['dyeable'] = item.get('changeColorEnable') if item.get('changeColorEnable') else '0'
+			items[itemId]['tradable'] = '1' if item.get('tradable') == "True" else '0'
+			items[itemId]['obtainable'] = '1' if item.get('obtainable') == "True" else '0'
+			items[itemId]['dyeable'] = '1' if item.get('changeColorEnable') == "True" else '0'
 			items[itemId]['period'] = item.get('periodInMinute') if item.get('periodInMinute') else '0'
 			items[itemId]['periodAdmin'] = '1' if item.get('periodByWebAdmin') == "True" else '0'
 
