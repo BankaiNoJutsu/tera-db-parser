@@ -1,22 +1,20 @@
-import datetime
 import utils
 
 
 def main(config, debug=False):
-    perfStart = datetime.datetime.now()
-
+    # Performance Counter Start
+    perfStart = utils.performance("start")
     # Check for database and connect
     link, conn = utils.dbConnect(config)
-    # Gather items and display name
+    # Gather items and display names
     items = {}
     items = utils.itemsRead(items, debug)
     items = utils.itemsAddName(items, debug)
     # Insert data into database
     if utils.itemsInsertDb(items, link, conn):
-        perfStop = datetime.datetime.now()
-        perfDelta = (perfStop - perfStart).total_seconds()
-        perfTime = f"{round(perfDelta, 3)}s ({round(perfDelta / 60, 1)}min)"
-        print(f"Total elapsed time: {perfTime}")
+        # Performance Counter End
+        perfStop = utils.performance("end", perfStart)
+        print(f"Total elapsed time: {round(perfStop, 3)}s ({round(perfStop / 60, 1)}min)")
     else:
         print("Something went wrong!")
     # Close connection
