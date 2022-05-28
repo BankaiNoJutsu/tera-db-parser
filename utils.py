@@ -62,6 +62,12 @@ def saveXML(path: str, tree: xml.ElementTree, debug=False):
 		file.write(string)
 
 
+def saveTxt(path: str, string: str):
+	with open(path,'w') as file:
+		file.write(string)
+	return True
+
+
 def backup(path, debug=False):
 	pybak = path+'.bak'
 	if not exists(pybak):
@@ -109,7 +115,29 @@ def itemsRead(items: dict, debug=False):
 	return items
 
 
-def itemsAddName(items: dict, debug=False):
+def sortIterable(list: set) -> list:
+	print(f"Sorting Entities...")
+	listSorted = sorted(list)
+	listNo = len(listSorted)
+	print(f"Sorting Entities complete: {listNo}")
+	return listSorted
+
+
+def getAttributes(typ: str, debug=False) -> set:
+	print(f"Getting Attributes...")
+	files = getAllXML(typ)
+	attributes = set()
+	for file in files:
+		treeItem, rootItem = loadXML(path=f'./data/{typ}/{file}', debug=debug)
+		for item in rootItem.findall('Item'):
+			attributes.update(item.attrib.keys())
+	# print(attributes)
+	attributesNo = len(attributes)
+	print(f"Getting Attributes complete: {attributesNo}")
+	return attributes
+
+
+def itemsAddName(items: dict, debug=False) -> dict:
 	print(f"Adding Item Names...")
 	type = "StrSheet"
 	files = getAllXML(type)
@@ -179,7 +207,7 @@ def itemsInsertDb(items: dict, link, conn) -> bool:
 	return save
 
 
-def performance(stage: str, time=False):
+def performance(stage: str, time=False) -> datetime:
 	match stage:
 		case "start":
 			return datetime.datetime.now()
