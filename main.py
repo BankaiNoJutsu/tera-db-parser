@@ -1,7 +1,22 @@
 import utils
 
 
-def main(config, debug=False):
+def runReader(config, debug=False):
+    # Performance Counter Start
+    perfStart = utils.performance("start")
+    # Get attributes
+    attributes = utils.getAttributes("item", debug)
+    attributes = utils.sortIterable(attributes)
+    attributes = "\n".join(attributes)
+    if utils.saveTxt('./output/attributes.txt', attributes):
+        # Performance Counter End
+        perfStop = utils.performance("end", perfStart)
+        print(f"Total elapsed time: {round(perfStop, 3)}s ({round(perfStop / 60, 1)}min)")
+    else:
+        print("Something went wrong!")
+
+
+def runParser(config, debug=False):
     # Performance Counter Start
     perfStart = utils.performance("start")
     # Check for database and connect
@@ -25,4 +40,4 @@ def main(config, debug=False):
 if __name__ == '__main__':
     config = utils.readConfig('config.ini')
     debug = True if config['Parser']['debug'] == "True" else False
-    main(config, debug)
+    runParser(config, debug)
